@@ -1,4 +1,4 @@
-# COMS30020 Computer Graphics 2025
+# COMS30020 Computer Graphics 2026
 
 Weekly workbooks will be published in <a href="Weekly%20Workbooks/">this folder</a> 
 each week during the first 8 weeks of term. Check back regularly to see 
