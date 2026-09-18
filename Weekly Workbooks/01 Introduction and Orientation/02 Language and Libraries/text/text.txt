@@ -19,6 +19,6 @@ In order to make things a little tidier, we have provided a "wrapper" object tha
 - `pollForInputEvents` checks to see if there are any events waiting to be processed (returns true if there are !)
 
 Examples of how to call the methods of the `DrawingWindow` class are included in the 
-<a href="extras/RedNoise/src/RedNoise.cpp" target="_blank">template project</a>. 
+<a href="extras/RenderProject/src/MainApplication.cpp" target="_blank">template project</a>. 
 
 
