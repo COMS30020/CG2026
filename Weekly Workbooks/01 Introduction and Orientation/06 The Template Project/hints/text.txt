@@ -1,0 +1,5 @@
+On some platforms you may need to #include `<cstring>` in the `DrawingWindow` class (if the compiler complains that it can't find `memset`).
+
+On some platforms you might also need to alter the #include statement in the `DrawingWindow.h` file from `"SDL.h"` to `"SDL2/SDL.h"` to allow the compiler to find the SDL library.
+
+If you are using CMake (either from the command line or inside an IDE) you might get a compile error referring to `asan`. This is mostly likely due to not having the Address Sanitizer library installed. You can either try to install this library, or just edit the `CMakeLists.txt` file to remove reference to `asan` (it isn't essential to the project - it's just sometimes helpful for tracking down segfaults and memory leaks).
