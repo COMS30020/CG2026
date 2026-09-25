@@ -1,0 +1,7 @@
+Before commencing with this week's workbook, make sure you have first watched the "Weekly Briefing" linked to above to gain an overview of the practical tasks involved.
+
+This week we will take a look at the fundamentals of computer graphics: basic drawing and pixel manipulation. Everything that we cover this week will be in 2 dimensions. In future weeks we will move on to begin working in 3D, it is however important that we walk before we try to run !
+
+In order to complete the work in this week's workbook, switch the `currentRenderer` in your main application to point at an instance of the `ColourSpectrumRenderer` class (note that `.cpp` and `.h` files have already been created for you). All code that you write for the tasks in this workbook should be entered into these `ColourSpectrumRenderer` files. This will help keep the code you write this week separate from the code you wrote last week (and also the code you will write in future weeks).
+
+You will hopefully find this workbook fairly straight-forward and should be able to complete it relatively quickly. This is intended to be a gentle week in order to provide some flexibility in the workload - in case you are still having difficulties installing SDL2, compiling and running your code. Next week the workbooks start to get more challenging !

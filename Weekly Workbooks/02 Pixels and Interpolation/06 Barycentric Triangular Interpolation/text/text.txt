@@ -1,0 +1,11 @@
+Hopefully the previous activity proved to be a useful and challenging 2 dimensional interpolation task. It is worth reflecting that, due to the rectangular shape of the SDL window, it required the use of a yellow corner (a non-primary colour) in order to provide four colour points needed for the 2D interpolation. The aim of our next task is to create a 2D _triangular_ interpolated surface using **only** the three _primary_ light colours (i.e. red, green and blue) as illustrated in the screenshot at the end of this section. In order to achieve this, for each pixel point within the triangle, we are going to need to know how close it is to each of the 3 vertices of the colour triangle.
+
+To help us in this task, we will make use of the concept of "Barycentric Coordinates" which, for any given point on a triangle, allow us to determine the proximity of that point to each of the triangle's vertices. Watch the video linked to at the top of this section for more information regarding Barycentric Coordinates.
+
+A function called `convertToBarycentricCoordinates` has been provided for you that will convert the SDL coordinates of a pixel into Barycentric Coordinates. This function (which is provided in the `Utils.cpp` file inside the `libs/sdw` folder) takes as parameters:
+- The 2D positions of the vertices of a triangle (passed in as three `vec2` objects containing [x,y] SDL coordinates)
+- The 2D position of a particular pixel on the above triangle (passed in as a `vec2` object containing [x,y] SDL coordinates)
+
+The function will return a `vec3` object containing the [`u`,`v`,`w`] Barycentric Coordinates of the point passed into the function, relative to the vertices of the specified triangle. These proximity values (which fall within the range 0.0-1.0) can then be used to weight the primary colours of each vertex in order to calculate a unique colour for each point on the triangular colour spectrum.
+
+Note that due to the way in which Barycentric Coordinates are calculated, `u` is the proximity to vertex `v1`, `v` is the proximity to vertex `v2` and `w` is the proximity to vertex `v0` (as illustrated in the diagram below).
