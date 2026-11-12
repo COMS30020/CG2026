@@ -1,0 +1,11 @@
+All of the rendering techniques we have considered so far on this unit make use of a "naive" representation of a camera.
+We have not modelled a physical lens or variable aperture. As a result, our renderers have operated very much like a simple pin-hole camera.
+Cameras in the real world however typically have a glass lens and controllable aperture.
+These physical features can cause some interesting visual phenomena to appear in the images that are produced by these devices.
+View the narrated animation linked to at the top of this section in order to gain an understanding of the concept of "depth-of-field".
+Use this knowledge to implement "Bokeh" in your renderer - that is: background (and/or foreground) blur caused by model elements
+being positioned _outside_ the zone of lens focus. Note that this feature does not require you to model a refractive glass lens
+in your rendered. Rather, you should _simulate_ a Bokeh effect with an appropriate selective blur in your ray tracer.
+If you attempt this extension, you should investigate the effect that different lens parameters have on the produced bokeh/blur.
+This could include simulating the effects of photographic equipment, such as bokeh "swirl" filters or reflex/catadioptric lenses 
+(as illustrated in the images below).
