@@ -32,12 +32,18 @@ bool savingFrames = false;
 int frameCounter = 0;
 
 // // Core 3D rendering data structures (for when we eventually get around to working in 3D ;o)
-// std::vector<ModelTriangle> triangles; // week 4
-// std::map<std::string, Colour> colourPalette;
-// glm::vec3 cameraPosition(0.0, 0.0, 4.0); // camera centered in the x and  y dimension but stepped a 'back a bit' in the z
-// glm::mat3 cameraOrientation;
-// glm::vec3 lightPosition(0.0, 0.8, 0.0);
-// float focalLength = 2.0; // setting the focal length at 2.0 positions the image plane halfway between the camera and the centre of the model.
+std::vector<ModelTriangle> triangles; // week 4
+std::map<std::string, Colour> colourPalette;
+glm::vec3 cameraPosition(0.0, 0.0, 4.0); // camera centered in the x and  y dimension but stepped a 'back a bit' in the z
+glm::mat3 cameraOrientation;
+glm::vec3 lightPosition(0.0, 0.8, 0.0);
+float focalLength = 2.0; // setting the focal length at 2.0 positions the image plane halfway between the camera and the centre of the model.
+std::vector <float> zDepthBuffer(WIDTH*HEIGHT, 0.0);
+RasterisedRenderer rasterisedRenderer = RasterisedRenderer(cameraPosition, lightPosition, cameraOrientation, focalLength, colourPalette, triangles, zDepthBuffer);
+RayTracedRenderer rayTracedRenderer = RayTracedRenderer(cameraPosition, lightPosition, cameraOrientation, focalLength, colourPalette, triangles);
+// Parser parser = Parser();
+Renderer* currentRenderer = &rasterisedRenderer;
+
 
 void handleEvent(SDL_Event event, DrawingWindow &window) {
 	if (event.type == SDL_KEYDOWN) {
