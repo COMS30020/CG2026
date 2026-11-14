@@ -16,11 +16,9 @@
 #include "../libs/sdw/ModelTriangle.h"
 
 
-class DrawingWindow;
 
-void Parser::draw(DrawingWindow &window) {}
 
-std::map<std::string, Colour> Parser::readMatFile(std::string filename, std::map<std::string,Colour> colourMap) {
+std::map<std::string, Colour> readMatFile(std::string filename, std::map<std::string,Colour> &colourMap) {
 	std::ifstream file(filename); // read file
 	std::string currentLine; // string to store each line
 	std::string nameOfColour; // key Colour
@@ -51,7 +49,7 @@ std::map<std::string, Colour> Parser::readMatFile(std::string filename, std::map
 	return colourMap;
 }
 
- std::vector<ModelTriangle> Parser::readObjFile(std::string filename, std::vector<ModelTriangle> savedTriangle, float scaleFactor, std::map<std::string,Colour> colourMap) {
+std::vector<ModelTriangle> readObjFile(std::string filename, std::vector<ModelTriangle>& savedTriangle, float scaleFactor, std::map<std::string,Colour>& colourMap) {
 
 	std::ifstream file(filename); // read file
 	std::string currentLine; // string to store each line
@@ -120,6 +118,11 @@ std::map<std::string, Colour> Parser::readMatFile(std::string filename, std::map
 
 
 	return savedTriangle;
+}
+
+void loadObj(std::string objFile, std::string matFile, std::vector<ModelTriangle> &triangles, std::map<std::string,Colour> &colourMap, float scaleFactor) {
+	colourMap = readMatFile(matFile, colourMap);
+	triangles = readObjFile(objFile, triangles, scaleFactor, colourMap);
 }
 
 
