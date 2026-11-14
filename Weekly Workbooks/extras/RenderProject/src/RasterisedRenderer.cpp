@@ -1,5 +1,5 @@
 #include "RasterisedRenderer.h"
-#include "Parser.h"
+#include "utilityFunctions.h"
 #include <CanvasPoint.h>
 #include <Colour.h>
 #include <map>
@@ -16,21 +16,10 @@
 #include "../libs/sdw/DrawingWindow.h"
 #include "../libs/sdw/ModelTriangle.h"
 
-ColourSpectrumRenderer interpolationFunctions;
-Parser parser;
-glm::vec3 cameraPosition(0.0, 0.0, 4.0); // camera centered in the x and  y dimension but stepped a 'back a bit' in the z
-glm::mat3 cameraOrientation;
-glm::vec3 lightPosition(0.0, 0.8, 0.0);
-float focalLength = 2.0; // setting the focal length at 2.0 positions the image plane halfway between the camera and the centre of the model.
-
-std::map<std::string, Colour> colourPalette = parser.readMatFile("/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/04 Wireframes and Rasterising/models/cornell-box.mtl", colourPalette);
-std::vector<ModelTriangle> triangles =  parser.readObjFile("/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/04 Wireframes and Rasterising/models/cornell-box.obj",triangles, 0.35, colourPalette);
-std::vector<float> zDepthBuffer(WIDTH*HEIGHT, 0.0);
 
 void RasterisedRenderer::draw(DrawingWindow &window) {
-	//window.clearPixels(); //--> this empies the screen.
+	//window.clearPixels(); //--> this empties the screen.
 	// Core 3D rendering data structures (for when we eventually get around to working in 3D ;o)
-
 
 	std::vector<CanvasTriangle> wireFrame;
 	std::vector<Colour> triangleColours; // colour of each canvas triangle
@@ -102,15 +91,15 @@ void RasterisedRenderer::lineDrawing(CanvasPoint from, CanvasPoint to, DrawingWi
 		float y = from.y + (yStepSize * i);
 
 		if (x>0 && y> 0 && x < window.width && y < window.height) { // restrict the drawing space//
-			//int index = floor(abs(x- from.x)); // difference between
-			//float currentZDepth = zDepths[index]*-1.0;
+			int index = floor(abs(x- from.x)); // difference between
+			float currentZDepth = zDepths[index]*-1.0;
 
 			//int i = y * window.width + x;
 
-			//if (zDepthBuffer[i] <= currentZDepth) {
+			if (zDepthBuffer[i] <= currentZDepth) {
 				window.setPixelColour(floor(x), floor(y), colour ); // can't have 1.5 pixel therefore need to round the x and y.
-			//	zDepthBuffer[i] = currentZDepth; //update zdepth buffer
-			//}
+				zDepthBuffer[i] = currentZDepth; //update zdepth buffer
+			}
 		}
 	}
 }
@@ -121,9 +110,9 @@ void RasterisedRenderer::drawStrokedTriangles(CanvasTriangle triangle, DrawingWi
 	lineDrawing(triangle.vertices[1], triangle.vertices[2], window, colour, zDepthBuffer);
 }
 
-std::vector<CanvasPoint> RasterisedRenderer::sortCoordsByY(std::vector<CanvasPoint>  unsortedVeritcies) {
+std::vector<CanvasPoint> RasterisedRenderer::sortCoordsByY(std::vector<CanvasPoint>  unsortedVertices) {
 
-	int n = unsortedVeritcies.size();
+	int n = unsortedVertices.size();
 
 	// Outer loop that corresponds to the number of elements to be sorted
 	for (int i = 0; i < n - 1; i++) {
@@ -131,13 +120,13 @@ std::vector<CanvasPoint> RasterisedRenderer::sortCoordsByY(std::vector<CanvasPoi
 		for (int j = 0; j < n - i - 1; j++) {
 
 			// Comparing adjacent elements
-			if (unsortedVeritcies[j].y > unsortedVeritcies[j + 1].y)
+			if (unsortedVertices[j].y > unsortedVertices[j + 1].y)
 
 				// Swapping if in the wrong order
-					std::swap(unsortedVeritcies[j], unsortedVeritcies[j + 1]);
+					std::swap(unsortedVertices[j], unsortedVertices[j + 1]);
 		}
 	}
-	return unsortedVeritcies;
+	return unsortedVertices;
 }
 
 float RasterisedRenderer::calculateGradient(CanvasPoint p1, CanvasPoint p2) {
@@ -149,16 +138,14 @@ float RasterisedRenderer::calculateGradient(CanvasPoint p1, CanvasPoint p2) {
 }
 
 std::vector<float> RasterisedRenderer::obtainZDepths(CanvasPoint firstPoint, CanvasPoint secondPoint, int pointCount) {
-	ColourSpectrumRenderer interpolationFunctions;
-	std::vector<float> zPoints = interpolationFunctions.interpolateSingleFloats(firstPoint.depth, secondPoint.depth, pointCount);
+	std::vector<float> zPoints = utilityFunctions::interpolateSingleFloats(firstPoint.depth, secondPoint.depth, pointCount);
 	return zPoints;
 }
 
 std::vector<CanvasPoint> RasterisedRenderer::obtainPoints(CanvasPoint firstPoint, CanvasPoint secondPoint, int pointCount) {
 	float gradientInverse = 1/calculateGradient(firstPoint, secondPoint);
 
-	ColourSpectrumRenderer interpolationFunctions;
-	std::vector<float> yPoints = interpolationFunctions.interpolateSingleFloats(firstPoint.y, secondPoint.y, pointCount);
+	std::vector<float> yPoints = utilityFunctions::interpolateSingleFloats(firstPoint.y, secondPoint.y, pointCount);
 
 	std::vector<float> zDepths = obtainZDepths(firstPoint, secondPoint, pointCount);
 
@@ -210,7 +197,6 @@ void RasterisedRenderer::drawFilledTriangles(CanvasTriangle triangle, DrawingWin
 	//top triangle
 	for (int  y = verticiesList[0].y; y < verticiesList[1].y; y++) {
 		for (int x = 0; x < numberOfRakes; x++) {
-
 			lineDrawing(firstLinePoints[x], secondLinePoints[x],window,colour, zDepthBuffer);
 		}
 	}

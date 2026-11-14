@@ -67,6 +67,18 @@
 },
 {
   "directory": "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/libs/glm-0.9.7.2\" -I\"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/libs/sdw\" -isystem /opt/homebrew/include -isystem /opt/homebrew/include/SDL2 -g -std=gnu++11 -arch arm64 -fcolor-diagnostics -Wall -Wextra -Wcast-align -Wfatal-errors -Werror=return-type -Wno-unused-parameter -Wno-unused-variable -Wno-ignored-attributes -O2 -fno-omit-frame-pointer -g -o CMakeFiles/RenderProject.dir/src/RasterisedRenderer.cpp.o -c \"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/src/RasterisedRenderer.cpp\"",
+  "file": "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/src/RasterisedRenderer.cpp",
+  "output": "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/cmake-build-debug/CMakeFiles/RenderProject.dir/src/RasterisedRenderer.cpp.o"
+},
+{
+  "directory": "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/libs/glm-0.9.7.2\" -I\"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/libs/sdw\" -isystem /opt/homebrew/include -isystem /opt/homebrew/include/SDL2 -g -std=gnu++11 -arch arm64 -fcolor-diagnostics -Wall -Wextra -Wcast-align -Wfatal-errors -Werror=return-type -Wno-unused-parameter -Wno-unused-variable -Wno-ignored-attributes -O2 -fno-omit-frame-pointer -g -o CMakeFiles/RenderProject.dir/src/RayTracedRenderer.cpp.o -c \"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/src/RayTracedRenderer.cpp\"",
+  "file": "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/src/RayTracedRenderer.cpp",
+  "output": "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/cmake-build-debug/CMakeFiles/RenderProject.dir/src/RayTracedRenderer.cpp.o"
+},
+{
+  "directory": "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/cmake-build-debug",
   "command": "/usr/bin/c++ -I\"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/libs/glm-0.9.7.2\" -I\"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/libs/sdw\" -isystem /opt/homebrew/include -isystem /opt/homebrew/include/SDL2 -g -std=gnu++11 -arch arm64 -fcolor-diagnostics -Wall -Wextra -Wcast-align -Wfatal-errors -Werror=return-type -Wno-unused-parameter -Wno-unused-variable -Wno-ignored-attributes -O2 -fno-omit-frame-pointer -g -o CMakeFiles/RenderProject.dir/src/RedNoiseRenderer.cpp.o -c \"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/src/RedNoiseRenderer.cpp\"",
   "file": "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/src/RedNoiseRenderer.cpp",
   "output": "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/cmake-build-debug/CMakeFiles/RenderProject.dir/src/RedNoiseRenderer.cpp.o"
@@ -76,5 +88,11 @@
   "command": "/usr/bin/c++ -I\"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/libs/glm-0.9.7.2\" -I\"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/libs/sdw\" -isystem /opt/homebrew/include -isystem /opt/homebrew/include/SDL2 -g -std=gnu++11 -arch arm64 -fcolor-diagnostics -Wall -Wextra -Wcast-align -Wfatal-errors -Werror=return-type -Wno-unused-parameter -Wno-unused-variable -Wno-ignored-attributes -O2 -fno-omit-frame-pointer -g -o CMakeFiles/RenderProject.dir/src/Renderer.cpp.o -c \"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/src/Renderer.cpp\"",
   "file": "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/src/Renderer.cpp",
   "output": "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/cmake-build-debug/CMakeFiles/RenderProject.dir/src/Renderer.cpp.o"
+},
+{
+  "directory": "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/cmake-build-debug",
+  "command": "/usr/bin/c++ -I\"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/libs/glm-0.9.7.2\" -I\"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/libs/sdw\" -isystem /opt/homebrew/include -isystem /opt/homebrew/include/SDL2 -g -std=gnu++11 -arch arm64 -fcolor-diagnostics -Wall -Wextra -Wcast-align -Wfatal-errors -Werror=return-type -Wno-unused-parameter -Wno-unused-variable -Wno-ignored-attributes -O2 -fno-omit-frame-pointer -g -o CMakeFiles/RenderProject.dir/src/utilityFunctions.cpp.o -c \"/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/src/utilityFunctions.cpp\"",
+  "file": "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/src/utilityFunctions.cpp",
+  "output": "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/cmake-build-debug/CMakeFiles/RenderProject.dir/src/utilityFunctions.cpp.o"
 }
 ]

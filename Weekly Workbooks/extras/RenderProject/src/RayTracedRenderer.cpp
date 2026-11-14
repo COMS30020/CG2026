@@ -1,5 +1,5 @@
 #include "RayTracedRenderer.h"
-#include "Parser.h"
+#include "utilityFunctions.h"
 #include <CanvasPoint.h>
 #include <Colour.h>
 #include <map>
@@ -8,7 +8,6 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtx/io.hpp>
-#include "ColourSpectrumRenderer.h"
 #include "../libs/sdw/CanvasTriangle.h"
 #include "../libs/sdw/Utils.h"
 #include <Colour.h>
@@ -17,10 +16,6 @@
 #include "../libs/sdw/ModelTriangle.h"
 #include "../libs/sdw/RayTriangleIntersection.h"
 
-Parser parse;
-glm::vec3 camera(0.0, 0.0, 4.0);
-std::map<std::string, Colour> palette = parse.readMatFile("/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/04 Wireframes and Rasterising/models/cornell-box.mtl", palette);
-std::vector<ModelTriangle> triangleList = parse.readObjFile("/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/04 Wireframes and Rasterising/models/cornell-box.obj",triangleList, 0.35, palette);
 
 class DrawingWindow;
 
@@ -30,8 +25,8 @@ void RayTracedRenderer::draw(DrawingWindow &window) {
 	for (int x = 0; x < window.width; x++) {
 		for (int y = 0; y < window.height; y++) {
 
-			glm::vec3 rayDirection(float(x), float(y), 1.0);
-			RayTriangleIntersection intersection = getClosestIntersection(camera, rayDirection, triangleList);
+			// glm::vec3 rayDirection(float(x), float(y), 1.0);
+			// RayTriangleIntersection intersection = getClosestIntersection(camera, rayDirection, triangleList);
 
 		}
 	}

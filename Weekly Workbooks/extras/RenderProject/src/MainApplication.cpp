@@ -1,8 +1,9 @@
 #include "Renderer.h"
-#include "RedNoiseRenderer.h"
-#include "ColourSpectrumRenderer.h"
+// #include "RedNoiseRenderer.h"
+// #include "ColourSpectrumRenderer.h"
 #include "RasterisedRenderer.h"
-#include "Parser.h"
+#include "utilityFunctions.h"
+#include "RayTracedRenderer.h"
 
 #include <Colour.h>
 
@@ -13,7 +14,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/io.hpp> // allows you to output vec3 in standard output.
 
-#include "RayTracedRenderer.h"
 #include "../libs/sdw/CanvasTriangle.h"
 
 struct Colour;
@@ -22,12 +22,9 @@ extern const int WIDTH = 320;
 extern const int HEIGHT = 240;
 
 DrawingWindow window = DrawingWindow(WIDTH, HEIGHT);
-RedNoiseRenderer redNoise = RedNoiseRenderer();
-ColourSpectrumRenderer colourSpectrumRenderer = ColourSpectrumRenderer();
-RasterisedRenderer rasterisedRenderer = RasterisedRenderer();
-RayTracedRenderer rayTracedRenderer = RayTracedRenderer();
-// Parser parser = Parser();
-Renderer* currentRenderer = &rayTracedRenderer;
+// RedNoiseRenderer redNoise = RedNoiseRenderer();
+// ColourSpectrumRenderer colourSpectrumRenderer = ColourSpectrumRenderer();
+
 bool savingFrames = false;
 int frameCounter = 0;
 
@@ -82,8 +79,8 @@ void handleEvent(SDL_Event event, DrawingWindow &window) {
 int main(int argc, char *argv[]) {
 	SDL_Event event;
 
-	std::string objFile = "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/04 Wireframes and Rasterising/models/cornell-box.obj";
-	std::string matFile = "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/04 Wireframes and Rasterising/models/cornell-box.mtl";
+	std::string objFile = "src/models/cornellBox/cornell-box.obj";
+	std::string matFile = "src/models/cornellBox/cornell-box.mtl";
 	float scaleFactor = 0.35;
 
 	utilityFunctions::loadModel(objFile, matFile, triangles, colourPalette, scaleFactor);
