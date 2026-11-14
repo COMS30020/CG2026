@@ -1,24 +1,15 @@
-#include "Parser.h"
-#include <CanvasPoint.h>
+#include "utilityFunctions.h"
 #include <Colour.h>
+#include <ModelTriangle.h>
+#include <Utils.h>
+#include <DrawingWindow.h>
+
 #include <map>
-
 #include <vector>
-
 #include <glm/glm.hpp>
-#include <glm/gtx/io.hpp>
-#include "ColourSpectrumRenderer.h"
-#include "../libs/sdw/CanvasTriangle.h"
-#include "../libs/sdw/Utils.h"
-#include <Colour.h>
-
-#include "../libs/sdw/DrawingWindow.h"
-#include "../libs/sdw/ModelTriangle.h"
 
 
-
-
-std::map<std::string, Colour> readMatFile(std::string filename, std::map<std::string,Colour> &colourMap) {
+std::map<std::string, Colour> utilityFunctions::readMatFile(std::string filename, std::map<std::string,Colour> &colourMap) {
 	std::ifstream file(filename); // read file
 	std::string currentLine; // string to store each line
 	std::string nameOfColour; // key Colour
@@ -49,7 +40,7 @@ std::map<std::string, Colour> readMatFile(std::string filename, std::map<std::st
 	return colourMap;
 }
 
-std::vector<ModelTriangle> readObjFile(std::string filename, std::vector<ModelTriangle>& savedTriangle, float scaleFactor, std::map<std::string,Colour>& colourMap) {
+std::vector<ModelTriangle> utilityFunctions::readObjFile(std::string filename, std::vector<ModelTriangle>& savedTriangle, float scaleFactor, std::map<std::string,Colour>& colourMap) {
 
 	std::ifstream file(filename); // read file
 	std::string currentLine; // string to store each line
@@ -120,11 +111,40 @@ std::vector<ModelTriangle> readObjFile(std::string filename, std::vector<ModelTr
 	return savedTriangle;
 }
 
-void loadObj(std::string objFile, std::string matFile, std::vector<ModelTriangle> &triangles, std::map<std::string,Colour> &colourMap, float scaleFactor) {
+void utilityFunctions::loadModel(std::string objFile, std::string matFile, std::vector<ModelTriangle> &triangles, std::map<std::string,Colour> &colourMap, float scaleFactor) {
 	colourMap = readMatFile(matFile, colourMap);
 	triangles = readObjFile(objFile, triangles, scaleFactor, colourMap);
 }
 
+
+std::vector<float> utilityFunctions::interpolateSingleFloats(float from, float to, int numberOfValues) {
+
+	float difference = to-from; // find the difference between start and end/
+	int intervals = numberOfValues -1;  // find the number of intervals
+	float cDifference = difference/intervals; // find common difference between vector values.
+
+	std::vector <float> result;
+	for (int i = 0; i < numberOfValues; i++) {
+		result.push_back(from + cDifference*float(i)); // start + c.difference gives colour at different pixel
+	}
+
+	return result;
+}
+
+std::vector<glm::vec3> utilityFunctions::interpolateThreeElementValues(glm::vec3 from, glm::vec3 to, int numberOfValues) {
+
+	glm::vec3 difference = to-from;
+	glm::vec3 intervals((numberOfValues-1.0),(numberOfValues-1.0),(numberOfValues-1.0));
+	glm::vec3 cDifference = difference/intervals;
+
+	std::vector <glm::vec3> result;
+
+	for (int i = 0; i < numberOfValues; i++) {
+		glm::vec3 p = glm::vec3(i,i,i); // can only multiply by a vec3, hence make a vector p
+		result.push_back(from + cDifference*p);
+	}
+	return result;
+}
 
 
 
