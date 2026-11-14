@@ -82,9 +82,11 @@ void handleEvent(SDL_Event event, DrawingWindow &window) {
 int main(int argc, char *argv[]) {
 	SDL_Event event;
 
-	// colourPalette = parser.readMatFile("/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/04 Wireframes and Rasterising/models/cornell-box.mtl", colourPalette);
-	// triangles = parser.readObjFile("/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/04 Wireframes and Rasterising/models/cornell-box.obj",triangles, 0.35, colourPalette);
-	// std::vector<float> zDepthBuffer(window.width*window.height, 0.0);
+	std::string objFile = "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/04 Wireframes and Rasterising/models/cornell-box.obj";
+	std::string matFile = "/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/04 Wireframes and Rasterising/models/cornell-box.mtl";
+	float scaleFactor = 0.35;
+
+	utilityFunctions::loadModel(objFile, matFile, triangles, colourPalette, scaleFactor);
 
 	while (true) { // forever loop
 		// We MUST poll for events - otherwise the window will freeze !
