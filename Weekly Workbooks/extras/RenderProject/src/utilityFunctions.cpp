@@ -146,5 +146,8 @@ std::vector<glm::vec3> utilityFunctions::interpolateThreeElementValues(glm::vec3
 	return result;
 }
 
-
+uint32_t utilityFunctions::convertColourToUint32(const Colour& colour) {
+	uint32_t uIntColour = (255 << 24) + (colour.red << 16) + (colour.green << 8) + colour.blue; // UNSIGNED INTEGER (THEREFORE, NEGATIVE INTEGER)
+	return uIntColour;
+}
 
