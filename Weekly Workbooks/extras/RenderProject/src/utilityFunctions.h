@@ -17,6 +17,7 @@ class utilityFunctions {
       static void loadModel(std::string objFile, std::string matFile, std::vector<ModelTriangle> &triangles, std::map<std::string,Colour> &colourMap, float scaleFactor);
       static std::vector<float> interpolateSingleFloats(float from, float to, int numberOfValues);
       static std::vector<glm::vec3> interpolateThreeElementValues(glm::vec3 from, glm::vec3 to, int numberOfValues);
+      static uint32_t convertColourToUint32(const Colour& colour);
 };
 
 

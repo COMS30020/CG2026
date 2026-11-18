@@ -22,7 +22,9 @@ class RayTracedRenderer: public Renderer {
       const std::vector<ModelTriangle>& triangles;
 
       void draw(DrawingWindow &window) override;
-      RayTriangleIntersection getClosestIntersection(glm::vec3 cameraPosition, glm::vec3 directionOfRay, std::vector<ModelTriangle> &triangles);
+      RayTriangleIntersection getClosestIntersection(glm::vec3 rayDirection);
+      std::vector<RayTriangleIntersection> sortPointsByT(std::vector<RayTriangleIntersection>  unsortedIntersections);
+      glm::vec3 transposePlaneCoordsToRay(glm::vec3 planePoint);
 
     // constructor of raytraced renderer
     RayTracedRenderer(const glm::vec3 &cameraPosition_, glm::vec3 &lightPosition_, const glm::mat3 &cameraOrientation_, float &focalLength_,

@@ -24,44 +24,97 @@ void RayTracedRenderer::draw(DrawingWindow &window) {
 
 	for (int x = 0; x < window.width; x++) {
 		for (int y = 0; y < window.height; y++) {
+			glm::vec3 rayDirection = transposePlaneCoordsToRay(glm::vec3(x, y, -focalLength*160));
+			RayTriangleIntersection intersection = getClosestIntersection(rayDirection);
 
-			// glm::vec3 rayDirection(float(x), float(y), 1.0);
-			// RayTriangleIntersection intersection = getClosestIntersection(camera, rayDirection, triangleList);
-
+			if (intersection.distanceFromCamera != -1.0) {
+				//std::cout << intersection.intersectedTriangle.colour <<  "intersection" << std::endl;
+				Colour triangleColour = intersection.intersectedTriangle.colour;
+				//std::cout << intersection.intersectedTriangle.colour << "intersection" << std::endl;
+				uint32_t colour = utilityFunctions::convertColourToUint32(triangleColour);
+				window.setPixelColour(x, y, colour);
+				//std::cout << "bleh" << std::endl;
+			}
 		}
 	}
 }
 
-RayTriangleIntersection RayTracedRenderer::getClosestIntersection(glm::vec3 cameraPosition, glm::vec3 directionOfRay,std::vector<ModelTriangle> &triangleList) {
 
-	float absDistance = 0.0;
+glm::vec3 RayTracedRenderer::transposePlaneCoordsToRay(glm::vec3 planePoint) {
+	float x=planePoint.x -WIDTH/2;
+	float y= HEIGHT/2-planePoint.y; //otherwise box is upside down.
+	glm::vec3 rayDirection = glm::vec3(x, y, planePoint.z);
+	glm::vec3 rayNormalised = glm::normalize(rayDirection);
+	//std::cout << rayNormalised.x << " " << rayNormalised.y << std::endl;
+
+	return rayNormalised;
+}
+
+std::vector<RayTriangleIntersection> RayTracedRenderer::sortPointsByT(std::vector<RayTriangleIntersection>  unsortedIntersections) {
+
+	int n = unsortedIntersections.size();
+
+	// Outer loop that corresponds to the number of elements to be sorted
+	for (int i = 0; i < n - 1; i++) {
+		// Last i elements are already in place
+		for (int j = 0; j < n - i - 1; j++) {
+
+			// Comparing adjacent elements
+			if (unsortedIntersections[j].distanceFromCamera > unsortedIntersections[j + 1].distanceFromCamera)
+
+				// Swapping if in the wrong order
+				std::swap(unsortedIntersections[j], unsortedIntersections[j + 1]);
+		}
+	}
+	return unsortedIntersections;
+}
+
+
+
+// what happens if no intersection?? --> that's why validation.
+RayTriangleIntersection RayTracedRenderer::getClosestIntersection(glm::vec3 rayDirection) {
 	std::vector<RayTriangleIntersection> intersections;
-	RayTriangleIntersection closestIntersection;
+	RayTriangleIntersection closestIntersection = RayTriangleIntersection(cameraPosition, -1.0, triangles[0],-1);
 
-	for (int triangle = 0 ; triangle < triangleList.size(); triangle++) {
+	size_t triangleInd = 0;
+	for (auto&&triangle : triangles) {
 
-		glm::vec3 e0 = triangleList[triangle].vertices[1] - triangleList[triangle].vertices[0]; // p1-p0
-		glm::vec3 e1 = triangleList[triangle].vertices[2] - triangleList[triangle].vertices[0]; //p2 -p0
-		glm::vec3 SPVector = cameraPosition - triangleList[triangle].vertices[0];
-		glm::mat3 DEMatrix(-directionOfRay, e0, e1); // -ray direction because negative z is away from us.
-		// and screen is in direction opposite us :)
+		//std::cout << triangle.vertices[0] << " " << triangle.vertices[1] << " " << triangle.vertices[2] << std::endl;
+
+		glm::vec3 e0 = triangle.vertices[1] - triangle.vertices[0];
+		glm::vec3 e1 = triangle.vertices[2] - triangle.vertices[0];
+		glm::vec3 SPVector = cameraPosition - triangle.vertices[0];
+		glm::mat3 DEMatrix(-rayDirection, e0, e1);
 		glm::vec3 possibleSolution = glm::inverse(DEMatrix) * SPVector;
-		glm::vec3 r = triangleList[triangle].vertices[0] + possibleSolution.y*e0 + possibleSolution.z*e1;
-		glm::vec3 positionVector = cameraPosition + (possibleSolution.x*directionOfRay);
 
-		if (positionVector == r) {
-			RayTriangleIntersection intersection = RayTriangleIntersection(r, possibleSolution.t, triangleList[triangle], triangle);
-			// collect all intersections and get one with smallest absolute dist.
-			intersections.push_back(intersection);
+		// and screen is in direction opposite us :)
+		// t, u, v vector
+		float t = possibleSolution.x;
+		float u = possibleSolution.y;
+		float v = possibleSolution.z;
+		// std::cout << t << ", " << u << ", " << v << std::endl;
+
+		// adds intersection to intersection list if u and v are within the triangle
+		// and if t is positive --> if t < 0 then the triangle renders behind camera so don't need the intersection.
+		if (((u >= 0.0)&& (u <= 1.0)) ) {
+			if ((v >= 0.0)&& (v <= 1.0)) {
+				if (((u+v) <= 1.0) && (t >= 0.0)){
+					glm::vec3 positionVector = cameraPosition + (t*rayDirection);
+
+					RayTriangleIntersection intersection = RayTriangleIntersection(positionVector, possibleSolution.x, triangle, triangleInd);
+					// collect all intersections and get one with smallest absolute dist.
+					intersections.push_back(intersection);
+				}
+			}
 		}
+		triangleInd++;
 	}
 
-	for (auto&& intersect : intersections) {
-		if (intersect.distanceFromCamera < absDistance) {
-			absDistance = intersect.distanceFromCamera;
-			closestIntersection = intersect;
-		}
-	}
+	if (intersections.empty()) return closestIntersection;
+	// do after u check for all possible intersects.
+
+    intersections = sortPointsByT(intersections);
+	closestIntersection = intersections[0];
+
 	return closestIntersection;
 }
-

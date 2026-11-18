@@ -1,6 +1,4 @@
 #include "Renderer.h"
-// #include "RedNoiseRenderer.h"
-// #include "ColourSpectrumRenderer.h"
 #include "RasterisedRenderer.h"
 #include "utilityFunctions.h"
 #include "RayTracedRenderer.h"
@@ -36,10 +34,11 @@ glm::mat3 cameraOrientation;
 glm::vec3 lightPosition(0.0, 0.8, 0.0);
 float focalLength = 2.0; // setting the focal length at 2.0 positions the image plane halfway between the camera and the centre of the model.
 std::vector <float> zDepthBuffer(WIDTH*HEIGHT, 0.0);
+
+//Renderers
 RasterisedRenderer rasterisedRenderer = RasterisedRenderer(cameraPosition, lightPosition, cameraOrientation, focalLength, colourPalette, triangles, zDepthBuffer);
 RayTracedRenderer rayTracedRenderer = RayTracedRenderer(cameraPosition, lightPosition, cameraOrientation, focalLength, colourPalette, triangles);
-// Parser parser = Parser();
-Renderer* currentRenderer = &rasterisedRenderer;
+Renderer* currentRenderer = &rayTracedRenderer; // pointer to current renderer
 
 
 void handleEvent(SDL_Event event, DrawingWindow &window) {
@@ -78,12 +77,15 @@ void handleEvent(SDL_Event event, DrawingWindow &window) {
 
 int main(int argc, char *argv[]) {
 	SDL_Event event;
-
-	std::string objFile = "src/models/cornellBox/cornell-box.obj";
-	std::string matFile = "src/models/cornellBox/cornell-box.mtl";
+	// if i run with make file (i.e. terminal) relative path for these  won't lead to a render?
+	std::string matFile = "../src/models/cornellBox/cornell-box.mtl";
+	std::string objFile = "../src/models/cornellBox/cornell-box.obj";
 	float scaleFactor = 0.35;
 
 	utilityFunctions::loadModel(objFile, matFile, triangles, colourPalette, scaleFactor);
+
+	// colourPalette = utilityFunctions::readMatFile(matFile, colourPalette);
+	// triangles = utilityFunctions::readObjFile(objFile, triangles, scaleFactor, colourPalette);
 
 	while (true) { // forever loop
 		// We MUST poll for events - otherwise the window will freeze !

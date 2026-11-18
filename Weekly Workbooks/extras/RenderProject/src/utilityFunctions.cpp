@@ -121,7 +121,7 @@ std::vector<float> utilityFunctions::interpolateSingleFloats(float from, float t
 
 	float difference = to-from; // find the difference between start and end/
 	int intervals = numberOfValues -1;  // find the number of intervals
-	float cDifference = difference/intervals; // find common difference between vector values.
+	float cDifference = difference/float(intervals); // find common difference between vector values.
 
 	std::vector <float> result;
 	for (int i = 0; i < numberOfValues; i++) {
