@@ -1,3 +1,0 @@
-/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/cmake-build-debug/CMakeFiles/RenderProject.dir
-/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/asrinivasan/Documents/CG2026/Weekly Workbooks/extras/RenderProject/cmake-build-debug/CMakeFiles/rebuild_cache.dir
