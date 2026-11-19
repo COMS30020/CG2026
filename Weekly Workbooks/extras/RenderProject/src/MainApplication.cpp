@@ -38,7 +38,7 @@ std::vector <float> zDepthBuffer(WIDTH*HEIGHT, 0.0);
 //Renderers
 RasterisedRenderer rasterisedRenderer = RasterisedRenderer(cameraPosition, lightPosition, cameraOrientation, focalLength, colourPalette, triangles, zDepthBuffer);
 RayTracedRenderer rayTracedRenderer = RayTracedRenderer(cameraPosition, lightPosition, cameraOrientation, focalLength, colourPalette, triangles);
-Renderer* currentRenderer = &rasterisedRenderer; // pointer to current renderer
+Renderer* currentRenderer = &rayTracedRenderer; // pointer to current renderer
 
 
 void handleEvent(SDL_Event event, DrawingWindow &window) {
