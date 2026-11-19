@@ -61,7 +61,6 @@ void handleEvent(SDL_Event event, DrawingWindow &window) {
 			cameraPosition -= translationVector;
 			std::cout <<cameraPosition << std::endl;
 			window.clearPixels();
-
 		}
 		else if (event.key.keysym.sym == SDLK_DOWN) {
 			glm::vec3 translationVector(0.0, 1.0, 0.0);
@@ -91,9 +90,6 @@ int main(int argc, char *argv[]) {
 	while (true) { // forever loop
 		// We MUST poll for events - otherwise the window will freeze !
 		if (window.pollForInputEvents(event)) handleEvent(event, window);
-
-
-		// std::cout << cameraPosition.x << " " << cameraPosition.y <<" " << cameraPosition.z << " "<< std::endl;
 		currentRenderer->draw(window);
 
 		/// polling for incoming mouse and keyboard events

@@ -91,9 +91,6 @@ void RasterisedRenderer::lineDrawing(CanvasPoint from, CanvasPoint to, DrawingWi
 
 		std::vector<float> zDepths = utilityFunctions::interpolateSingleFloats(from.depth, to.depth, numberOfSteps);
 
-
-
-
 		for (int i=0; i <= numberOfSteps; i++) {
 			float x = from.x + (xStepSize * i);
 			float y = from.y + (yStepSize * i);
@@ -104,11 +101,8 @@ void RasterisedRenderer::lineDrawing(CanvasPoint from, CanvasPoint to, DrawingWi
 				int i = y * window.width + x;
 				//std::cout<<"origin:" << currentZDepth <<std::endl;
 
-
-
-
-				if (zDepthBuffer[i] < currentZDepth) {
-					std::cout <<"X: "<< x <<"Y: "<< y<< "z: "<< currentZDepth <<std::endl;
+				if (zDepthBuffer[i] <= currentZDepth) {
+					//std::cout <<"X: "<< x <<"Y: "<< y<< "z: "<< currentZDepth <<std::endl;
 					window.setPixelColour(floor(x), floor(y),  colour ); // can't have 1.5 pixel therefore need to round the x and y.
 					zDepthBuffer[i] = currentZDepth; //update zdepth buffer
 				}
