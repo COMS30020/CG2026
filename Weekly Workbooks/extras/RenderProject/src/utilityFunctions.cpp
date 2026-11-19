@@ -125,6 +125,8 @@ std::vector<float> utilityFunctions::interpolateSingleFloats(float from, float t
 	int intervals = numberOfValues -1;  // find the number of intervals
 	float cDifference = difference/float(intervals); // find common difference between vector values.
 
+	if (intervals == 0 ) {cDifference = 1.0;}
+
 	std::vector <float> result;
 	for (int i = 0; i < numberOfValues; i++) {
 		result.push_back(from + cDifference*float(i)); // start + c.difference gives colour at different pixel
@@ -164,5 +166,6 @@ std::vector<float> utilityFunctions::clearDepthBuffer(std::vector<float> depthBu
 	for (float & i : depthBuffer) {
 		i = 0.0;
 	}
+
 	return depthBuffer;
 }

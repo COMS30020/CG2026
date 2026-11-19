@@ -47,7 +47,9 @@ void handleEvent(SDL_Event event, DrawingWindow &window) {
 		if (event.key.keysym.sym == SDLK_LEFT) {
 			glm::vec3 translationVector(1.0, 0.0, 0.0);
 			cameraPosition += translationVector;
-			std::cout <<cameraPosition << std::endl;
+			// std::cout << zDepthBuffer[0] << std::endl;
+			// std::cout << zDepthBuffer[window.width*window.height-1] << std::endl;
+
 		}
 		else if (event.key.keysym.sym == SDLK_RIGHT) {
 			glm::vec3 translationVector(1.0, 0.0, 0.0);

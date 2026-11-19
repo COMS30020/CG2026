@@ -35,6 +35,8 @@ class RasterisedRenderer: public Renderer {
       std::vector<CanvasPoint> sortCoordsByY(std::vector<CanvasPoint>  unsortedVertices);
       std::vector<CanvasPoint> obtainPoints(CanvasPoint firstPoint, CanvasPoint secondPoint, int pointCount);
       float calculateGradient(CanvasPoint p1, CanvasPoint p2);
+      float calculateZGradient(CanvasPoint p1, CanvasPoint p2);
+
       CanvasPoint projectVertexOntoCanvasPoint(glm::vec3 cameraPosition, float focalLength, glm::vec3 vertexPosition, DrawingWindow &window);
 
       // constructor of rasterised renderer

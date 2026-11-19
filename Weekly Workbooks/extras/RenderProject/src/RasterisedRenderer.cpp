@@ -4,6 +4,7 @@
 #include <Colour.h>
 #include <map>
 
+#include <cmath>
 #include <vector>
 
 #include <glm/glm.hpp>
@@ -40,11 +41,12 @@ void RasterisedRenderer::draw(DrawingWindow &window) {
 
 	// uint32_t colour = (255 << 24) + (0 << 16) + (255 << 8) + 0; // UNSIGNED INTEGER (THEREFORE, NEGATIVE INTEGER)
 	int triangleColourIndex = 0;
-	//for (auto&&triangle : wireFrame) {
-	for (int triangle = triangleInd; triangle < wireFrame.size(); triangle++) {
-		drawFilledTriangles(wireFrame[triangle], window, triangleColours[triangle], zDepthBuffer);
+	for (auto&&triangle : wireFrame) {
+	// for (int triangle = triangleInd; triangle < wireFrame.size(); triangle++) {
+		drawFilledTriangles(triangle, window, triangleColours[triangleColourIndex], zDepthBuffer);
+		triangleColourIndex++;
 	}
-		//triangleColourIndex++;
+
 	//}
 }
 
@@ -60,7 +62,6 @@ CanvasPoint RasterisedRenderer::projectVertexOntoCanvasPoint(glm::vec3 cameraPos
 
 	// convert from model coordinate system to camera coordinate system. --> camera is origin.
 	// model. verticies  relative to the centre of the room
-
 
 	float imagePlaneScaling = 160.0;
 
@@ -78,7 +79,7 @@ CanvasPoint RasterisedRenderer::projectVertexOntoCanvasPoint(glm::vec3 cameraPos
 
 	CanvasPoint twoDPoint = CanvasPoint(round(u),round(v));
 	if (inverseZ < 0.0) twoDPoint.depth = abs(1.0f/inverseZ) ;
-	twoDPoint.depth = 1.0f/inverseZ;
+	else {twoDPoint.depth = 1.0f/inverseZ;}
 
 	return twoDPoint;
 }
@@ -109,17 +110,22 @@ void RasterisedRenderer::lineDrawing(CanvasPoint from, CanvasPoint to, DrawingWi
 			float x = from.x + (xStepSize * i);
 			float y = from.y + (yStepSize * i);
 
-			if (x>0 && y> 0 && x < window.width && y < window.height) { // restrict the drawing space//
-				float currentZDepth = abs(from.depth+ (depStepSize*i));
-				int z = floor(y) * window.width + floor(x);
+			int xPixel = round(x);
+			int yPixel = round(y);
+
+			if (xPixel>=0 && yPixel>= 0 && xPixel < window.width && yPixel < window.height) {
+				// restrict the drawing space//
+				float currentZDepth = abs(from.depth+(depStepSize*i));
+				int z = yPixel * window.width + xPixel;
 				//std::cout<<"origin:" << currentZDepth <<std::endl;
 
-				if (zDepthBuffer[z] <= currentZDepth) {
+				if (currentZDepth > zDepthBuffer[z]) {
 					//std::cout <<"X: "<< x <<"Y: "<< y<< "z: "<< currentZDepth <<std::endl;
-					window.setPixelColour(floor(x), floor(y),  colour ); // can't have 1.5 pixel therefore need to round the x and y.
-					zDepthBuffer[z] = currentZDepth; //update zdepth buffer
+					window.setPixelColour(xPixel, yPixel,  colour ); // can't have 1.5 pixel therefore need to round the x and y.
+						zDepthBuffer[z] = currentZDepth; //update zdepth buffer
+					}
 				}
-			}
+
 		}
 	}
 }
@@ -178,14 +184,36 @@ std::vector<CanvasPoint> RasterisedRenderer::sortCoordsByY(std::vector<CanvasPoi
 float RasterisedRenderer::calculateGradient(CanvasPoint p1, CanvasPoint p2) {
 	float yDiff = p2.y - p1.y;
 	float xDiff = p2.x - p1.x;
-	float gradient = yDiff;
-	if (xDiff != 0) gradient = yDiff/xDiff;
+	float gradient;
+
+	if (xDiff == 0) gradient = INFINITY;
+	else if (yDiff == 0) gradient = 0;
+	else gradient = yDiff/xDiff;
+
+	return gradient;
+}
+
+float RasterisedRenderer::calculateZGradient(CanvasPoint p1, CanvasPoint p2) {
+	float yDiff = p2.y - p1.y;
+	float zDiff = p2.depth - p1.depth;
+	float gradient;
+
+	if (zDiff == 0) gradient = INFINITY;
+	else if (yDiff == 0) gradient = 0;
+	else gradient = yDiff/zDiff;
+
 	return gradient;
 }
 
 
 std::vector<CanvasPoint> RasterisedRenderer::obtainPoints(CanvasPoint firstPoint, CanvasPoint secondPoint, int pointCount) {
-	float gradientInverse = 1/calculateGradient(firstPoint, secondPoint);
+
+	float gradient = calculateGradient(firstPoint, secondPoint);
+	float gradientInverse = 0;
+	std::vector<float> xPoints =utilityFunctions::interpolateSingleFloats(firstPoint.x, secondPoint.x, pointCount);
+
+
+	if (gradient != 0) {gradientInverse = 1/gradient;} // x/y to get 1/m (y=mx+c where c = 0 )
 
 	std::vector<float> yPoints = utilityFunctions::interpolateSingleFloats(firstPoint.y, secondPoint.y, pointCount);
 
@@ -194,20 +222,17 @@ std::vector<CanvasPoint> RasterisedRenderer::obtainPoints(CanvasPoint firstPoint
 	std::vector<CanvasPoint> points;
 
 	for (int i = 0; i < pointCount; i++) {
-		float xPoint = firstPoint.x+((yPoints[i]-firstPoint.y) * gradientInverse); // IT WORKS :D
-		CanvasPoint newPoint = CanvasPoint(xPoint,yPoints[i]);
-		newPoint.depth = zDepths[i];
+		float xPoint;
+		if (gradientInverse != 0) { xPoint = firstPoint.x+((yPoints[i]-firstPoint.y) * gradientInverse);}
+		else xPoint = xPoints[i]; // IT WORKS :D
+		CanvasPoint newPoint = CanvasPoint(xPoint,yPoints[i], zDepths[i]);
 		points.push_back(newPoint);
-
 	}
 	return points;
 }
 
 void RasterisedRenderer::drawFilledTriangles(CanvasTriangle triangle, DrawingWindow &window, Colour colour, std::vector<float> &zDepthBuffer) {
-	//drawStrokedTriangles(triangle, window, colour);
-	// lineDrawing(triangle.vertices[0], triangle.vertices[1], window, colour, zDepthBuffer);
-	// lineDrawing(triangle.vertices[0], triangle.vertices[2], window, colour, zDepthBuffer);
-	// lineDrawing(triangle.vertices[1], triangle.vertices[2], window, colour,zDepthBuffer);
+
 	std::vector<CanvasPoint> verticiesList;
 
 	for (int i =0; i <3; i++) {
@@ -215,7 +240,17 @@ void RasterisedRenderer::drawFilledTriangles(CanvasTriangle triangle, DrawingWin
 	}
 	verticiesList = sortCoordsByY(verticiesList);
 
-	float gradientInverse = 1/calculateGradient(verticiesList[0], verticiesList[2]); // x/y to get 1/m (y=mx+c where c = 0 )
+	float gradient = calculateGradient(verticiesList[0], verticiesList[2]);
+	float gradientInverse;
+
+	if (gradient != 0) {gradientInverse = 1/gradient;} // x/y to get 1/m (y=mx+c where c = 0 )
+	else {gradientInverse = 1;}
+
+	float zGradient = 1/calculateZGradient(verticiesList[0], verticiesList[2]);
+
+	if (calculateZGradient(verticiesList[0],verticiesList[2]) == 0) {std::cout << "Infinite z" << std::endl;}
+
+
 	//we have y dist between the middle point and top point by yCoords[1] - yCoords[0]
 	//we can work out the x difference by multiplying the y difference by the gradient inverse
 	// midYdiff*xdiff/ydiff= midXdiff.
@@ -223,7 +258,8 @@ void RasterisedRenderer::drawFilledTriangles(CanvasTriangle triangle, DrawingWin
 	// if its >0 then it adds as appropriate :) LORD WHY WAS THAT SO HARD???
 
 	float extraPointX = verticiesList[0].x+((verticiesList[1].y-verticiesList[0].y) * gradientInverse); // IT WORKS :D
-	CanvasPoint extraPoint = CanvasPoint(round(extraPointX),verticiesList[1].y);
+	float extraPointZ = verticiesList[0].depth+((verticiesList[1].y-verticiesList[0].y) * zGradient);
+	CanvasPoint extraPoint = CanvasPoint((extraPointX),verticiesList[1].y, (extraPointZ));
 
 	int numberOfRakes = verticiesList[1].y-verticiesList[0].y + 1;
 	// shouldn't be the same number of points on both sides :/ --> because the lines have different gradients
@@ -251,8 +287,8 @@ void RasterisedRenderer::drawFilledTriangles(CanvasTriangle triangle, DrawingWin
 			lineDrawing(downLinePoints[x], secondDownLinePoints[x],window,colour,zDepthBuffer);
 		}
 	}
-
-
-}
+	lineDrawing(triangle.vertices[0], triangle.vertices[1], window, colour, zDepthBuffer);
+	lineDrawing(triangle.vertices[0], triangle.vertices[2], window, colour, zDepthBuffer);
+	lineDrawing(triangle.vertices[1], triangle.vertices[2], window, colour, zDepthBuffer);}
 
 	// texture map later. --> just need theory for midterm!!!!!! -_- doing easier way after reading week.
