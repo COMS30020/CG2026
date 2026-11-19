@@ -38,7 +38,7 @@ std::vector <float> zDepthBuffer(WIDTH*HEIGHT, 0.0);
 //Renderers
 RasterisedRenderer rasterisedRenderer = RasterisedRenderer(cameraPosition, lightPosition, cameraOrientation, focalLength, colourPalette, triangles, zDepthBuffer);
 RayTracedRenderer rayTracedRenderer = RayTracedRenderer(cameraPosition, lightPosition, cameraOrientation, focalLength, colourPalette, triangles);
-Renderer* currentRenderer = &rayTracedRenderer; // pointer to current renderer
+Renderer* currentRenderer = &rasterisedRenderer; // pointer to current renderer
 
 
 void handleEvent(SDL_Event event, DrawingWindow &window) {
@@ -47,29 +47,8 @@ void handleEvent(SDL_Event event, DrawingWindow &window) {
 		else if (event.key.keysym.sym == SDLK_RIGHT) std::cout << "RIGHT" << std::endl;
 		else if (event.key.keysym.sym == SDLK_UP) std::cout << "UP" << std::endl;
 		else if (event.key.keysym.sym == SDLK_DOWN) std::cout << "DOWN" << std::endl;
-		else if (event.key.keysym.sym == SDLK_u) {
-			// limit these to visual points in the screen.
-			// CanvasPoint v1 = CanvasPoint(rand()%window.width, rand()%window.height);
-			// CanvasPoint v2 = CanvasPoint(rand()%window.width, rand()%window.height);
-			// CanvasPoint v3 = CanvasPoint(rand()%window.width, rand()%window.height);
-
-			// Colour colour = Colour(rand()%256, rand()%256, rand()%256);
-			//CanvasTriangle triangle = CanvasTriangle(v1, v2, v3);
-			//rasterisedRenderer.drawStrokedTriangles(triangle, window, Colour(255,255,255));
-		}
-		else if (event.key.keysym.sym == SDLK_f) {
-			// limit these to visual points in the screen.
-			// CanvasPoint v1 = CanvasPoint(rand()%window.width, rand()%window.height);
-			// CanvasPoint v2 = CanvasPoint(rand()%window.width, rand()%window.height);
-			// CanvasPoint v3 = CanvasPoint(rand()%window.width, rand()%window.height);
-
-			// Colour colour = Colour(rand()%256, rand()%256, rand()%256);
-
-			//CanvasTriangle triangle = CanvasTriangle(v1, v2, v3);
-
-			//rasterisedRenderer.drawFilledTriangles(triangle, window, colour);
-			//rasterisedRenderer.drawStrokedTriangles(triangle, window, Colour(255,255,255));
-		}
+		else if (event.key.keysym.sym == SDLK_u) std::cout << "u" << std::endl;
+		else if (event.key.keysym.sym == SDLK_f) std::cout << "f" << std::endl;
 		else if (event.key.keysym.sym == SDLK_TAB) savingFrames = !savingFrames;
 		else if (event.key.keysym.sym == SDLK_RETURN) window.toggleFullscreen();
 	}
