@@ -43,10 +43,32 @@ Renderer* currentRenderer = &rasterisedRenderer; // pointer to current renderer
 
 void handleEvent(SDL_Event event, DrawingWindow &window) {
 	if (event.type == SDL_KEYDOWN) {
-		if (event.key.keysym.sym == SDLK_LEFT) std::cout << "LEFT" << std::endl;
-		else if (event.key.keysym.sym == SDLK_RIGHT) std::cout << "RIGHT" << std::endl;
-		else if (event.key.keysym.sym == SDLK_UP) std::cout << "UP" << std::endl;
-		else if (event.key.keysym.sym == SDLK_DOWN) std::cout << "DOWN" << std::endl;
+		if (event.key.keysym.sym == SDLK_LEFT) {
+			glm::vec3 translationVector(1.0, 0.0, 0.0);
+			cameraPosition += translationVector;
+			std::cout <<cameraPosition << std::endl;
+			window.clearPixels();
+		}
+		else if (event.key.keysym.sym == SDLK_RIGHT) {
+			glm::vec3 translationVector(1.0, 0.0, 0.0);
+			std::cout <<cameraPosition << std::endl;
+			cameraPosition -= translationVector;
+			window.clearPixels();
+		}
+		else if (event.key.keysym.sym == SDLK_UP) {
+
+			glm::vec3 translationVector(0.0, 1.0, 0.0);
+			cameraPosition -= translationVector;
+			std::cout <<cameraPosition << std::endl;
+			window.clearPixels();
+
+		}
+		else if (event.key.keysym.sym == SDLK_DOWN) {
+			glm::vec3 translationVector(0.0, 1.0, 0.0);
+			cameraPosition += translationVector;
+			std::cout <<cameraPosition << std::endl;
+			window.clearPixels();
+		}
 		else if (event.key.keysym.sym == SDLK_u) std::cout << "u" << std::endl;
 		else if (event.key.keysym.sym == SDLK_f) std::cout << "f" << std::endl;
 		else if (event.key.keysym.sym == SDLK_TAB) savingFrames = !savingFrames;
@@ -70,9 +92,13 @@ int main(int argc, char *argv[]) {
 		// We MUST poll for events - otherwise the window will freeze !
 		if (window.pollForInputEvents(event)) handleEvent(event, window);
 
+
+		// std::cout << cameraPosition.x << " " << cameraPosition.y <<" " << cameraPosition.z << " "<< std::endl;
+		currentRenderer->draw(window);
+
 		/// polling for incoming mouse and keyboard events
 		// In C++ we can't use "." notation for dynamic dispatch, so we have to use -> instead :o(
-		currentRenderer->draw(window);/// draws screen with current renderer --> if something already drawn by event handline the window.clearPixels() cleans it.
+		//currentRenderer->draw(window);/// draws screen with current renderer --> if something already drawn by event handline the window.clearPixels() cleans it.
 		// Need to ask the SDL window to render the frame, otherwise nothing actually gets shown on the screen !
 		window.renderFrame(); // renders the memory buffers
 

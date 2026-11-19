@@ -4,6 +4,7 @@
 #include "CanvasTriangle.h"
 #include <Colour.h>
 #include <map>
+#include <vector>
 #include <ModelTriangle.h>
 
 #include <glm/glm.hpp>

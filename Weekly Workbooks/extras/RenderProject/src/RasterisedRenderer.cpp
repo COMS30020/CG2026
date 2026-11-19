@@ -18,7 +18,7 @@
 
 
 void RasterisedRenderer::draw(DrawingWindow &window) {
-	//window.clearPixels(); //--> this empties the screen.
+	// window.clearPixels(); //--> this empties the screen.
 	// Core 3D rendering data structures (for when we eventually get around to working in 3D ;o)
 
 	std::vector<CanvasTriangle> wireFrame;
@@ -93,6 +93,7 @@ void RasterisedRenderer::lineDrawing(CanvasPoint from, CanvasPoint to, DrawingWi
 
 
 
+
 		for (int i=0; i <= numberOfSteps; i++) {
 			float x = from.x + (xStepSize * i);
 			float y = from.y + (yStepSize * i);
@@ -104,7 +105,10 @@ void RasterisedRenderer::lineDrawing(CanvasPoint from, CanvasPoint to, DrawingWi
 				//std::cout<<"origin:" << currentZDepth <<std::endl;
 
 
+
+
 				if (zDepthBuffer[i] < currentZDepth) {
+					std::cout <<"X: "<< x <<"Y: "<< y<< "z: "<< currentZDepth <<std::endl;
 					window.setPixelColour(floor(x), floor(y),  colour ); // can't have 1.5 pixel therefore need to round the x and y.
 					zDepthBuffer[i] = currentZDepth; //update zdepth buffer
 				}
