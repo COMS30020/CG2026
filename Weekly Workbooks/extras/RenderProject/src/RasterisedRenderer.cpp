@@ -17,6 +17,8 @@
 #include "../libs/sdw/DrawingWindow.h"
 #include "../libs/sdw/ModelTriangle.h"
 
+//comment  for new pR 
+
 
 void RasterisedRenderer::draw(DrawingWindow &window) {
 	window.clearPixels(); //--> this empties the screen.
