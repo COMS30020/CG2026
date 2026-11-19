@@ -33,6 +33,7 @@ void RayTracedRenderer::draw(DrawingWindow &window) {
 				//std::cout << intersection.intersectedTriangle.colour << "intersection" << std::endl;
 				uint32_t colour = utilityFunctions::convertColourToUint32(triangleColour);
 				window.setPixelColour(x, y, colour);
+				//std::cout << "bleh" << std::endl;
 			}
 		}
 	}
@@ -44,14 +45,10 @@ glm::vec3 RayTracedRenderer::transposePlaneCoordsToRay(glm::vec3 planePoint) {
 	float y= HEIGHT/2-planePoint.y; //otherwise box is upside down.
 	glm::vec3 rayDirection = glm::vec3(x, y, planePoint.z);
 	glm::vec3 rayNormalised = glm::normalize(rayDirection);
+	//std::cout << rayNormalised.x << " " << rayNormalised.y << std::endl;
 
 	return rayNormalised;
 }
-
-
-
-// pass a ray with ray direction.
-
 
 std::vector<RayTriangleIntersection> RayTracedRenderer::sortPointsByT(std::vector<RayTriangleIntersection>  unsortedIntersections) {
 
@@ -71,6 +68,7 @@ std::vector<RayTriangleIntersection> RayTracedRenderer::sortPointsByT(std::vecto
 	}
 	return unsortedIntersections;
 }
+
 
 
 // what happens if no intersection?? --> that's why validation.

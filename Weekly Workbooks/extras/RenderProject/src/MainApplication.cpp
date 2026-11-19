@@ -18,7 +18,6 @@ struct Colour;
 // Define globals for WIDTH and HEIGHT of the window (can be accessed from any renderer)
 extern const int WIDTH = 320;
 extern const int HEIGHT = 240;
-extern int trianglesToDraw;
 
 DrawingWindow window = DrawingWindow(WIDTH, HEIGHT);
 // RedNoiseRenderer redNoise = RedNoiseRenderer();
@@ -39,21 +38,24 @@ std::vector <float> zDepthBuffer(WIDTH*HEIGHT, 0.0);
 //Renderers
 RasterisedRenderer rasterisedRenderer = RasterisedRenderer(cameraPosition, lightPosition, cameraOrientation, focalLength, colourPalette, triangles, zDepthBuffer);
 RayTracedRenderer rayTracedRenderer = RayTracedRenderer(cameraPosition, lightPosition, cameraOrientation, focalLength, colourPalette, triangles);
-Renderer* currentRenderer = &rasterisedRenderer; // pointer to current renderer
+Renderer* currentRenderer = &rayTracedRenderer; // pointer to current renderer
 
 
 void handleEvent(SDL_Event event, DrawingWindow &window) {
-
 	if (event.type == SDL_KEYDOWN) {
 		if (event.key.keysym.sym == SDLK_LEFT) std::cout << "LEFT" << std::endl;
 		else if (event.key.keysym.sym == SDLK_RIGHT) std::cout << "RIGHT" << std::endl;
 		else if (event.key.keysym.sym == SDLK_UP) std::cout << "UP" << std::endl;
 		else if (event.key.keysym.sym == SDLK_DOWN) std::cout << "DOWN" << std::endl;
 		else if (event.key.keysym.sym == SDLK_u) {
+			// limit these to visual points in the screen.
+			// CanvasPoint v1 = CanvasPoint(rand()%window.width, rand()%window.height);
+			// CanvasPoint v2 = CanvasPoint(rand()%window.width, rand()%window.height);
+			// CanvasPoint v3 = CanvasPoint(rand()%window.width, rand()%window.height);
 
-			// trianglesToDraw++;
-			// //currentRenderer->draw(window);
-			// std::cout << "drawing triangle " << trianglesToDraw << "\n";
+			// Colour colour = Colour(rand()%256, rand()%256, rand()%256);
+			//CanvasTriangle triangle = CanvasTriangle(v1, v2, v3);
+			//rasterisedRenderer.drawStrokedTriangles(triangle, window, Colour(255,255,255));
 		}
 		else if (event.key.keysym.sym == SDLK_f) {
 			// limit these to visual points in the screen.
@@ -91,14 +93,7 @@ int main(int argc, char *argv[]) {
 
 		/// polling for incoming mouse and keyboard events
 		// In C++ we can't use "." notation for dynamic dispatch, so we have to use -> instead :o(
-		//
-		//
-		if (event.key.keysym.sym == SDLK_t && trianglesToDraw < triangles.size()-1) {
-			trianglesToDraw++;
-			currentRenderer->draw(window);
-			std::cout << "drawing triangle " << trianglesToDraw << "\n";
-		}
-		//currentRenderer->draw(window);/// draws screen with current renderer --> if something already drawn by event handline the window.clearPixels() cleans it.
+		currentRenderer->draw(window);/// draws screen with current renderer --> if something already drawn by event handline the window.clearPixels() cleans it.
 		// Need to ask the SDL window to render the frame, otherwise nothing actually gets shown on the screen !
 		window.renderFrame(); // renders the memory buffers
 

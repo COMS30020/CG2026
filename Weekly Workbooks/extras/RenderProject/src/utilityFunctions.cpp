@@ -9,8 +9,6 @@
 #include <glm/glm.hpp>
 
 
-int trianglesToDraw = -1;
-
 std::map<std::string, Colour> utilityFunctions::readMatFile(std::string filename, std::map<std::string,Colour> &colourMap) {
 	std::ifstream file(filename); // read file
 	std::string currentLine; // string to store each line
@@ -117,8 +115,6 @@ void utilityFunctions::loadModel(std::string objFile, std::string matFile, std::
 	colourMap = readMatFile(matFile, colourMap);
 	triangles = readObjFile(objFile, triangles, scaleFactor, colourMap);
 }
-
-
 
 
 std::vector<float> utilityFunctions::interpolateSingleFloats(float from, float to, int numberOfValues) {

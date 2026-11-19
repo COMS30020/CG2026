@@ -12,8 +12,6 @@
 
 class utilityFunctions {
    public:
-      static int trianglesToDraw;
-
       static std::vector<ModelTriangle> readObjFile(std::string filename, std::vector<ModelTriangle>& triangles, float scaleFactor,std::map<std::string,Colour>& colourMap);
       static std::map<std::string, Colour> readMatFile(std::string filename, std::map<std::string,Colour>& colourTable);
       static void loadModel(std::string objFile, std::string matFile, std::vector<ModelTriangle> &triangles, std::map<std::string,Colour> &colourMap, float scaleFactor);
