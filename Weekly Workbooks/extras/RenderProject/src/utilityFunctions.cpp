@@ -151,6 +151,6 @@ uint32_t utilityFunctions::convertColourToUint32(const Colour& colour) {
 	return uIntColour;
 }
 
-// glm::vec3 utilityFunctions::translateCameraPosition(glm::vec3 cameraPosition, glm::vec3 translationVector) {
-//
-// }
+glm::vec3 utilityFunctions::translateCameraPosition(glm::vec3 cameraPosition, glm::vec3 translationVector) {
+    return 0;
+}
