@@ -246,9 +246,11 @@ void RasterisedRenderer::drawFilledTriangles(CanvasTriangle triangle, DrawingWin
 	if (gradient != 0) {gradientInverse = 1/gradient;} // x/y to get 1/m (y=mx+c where c = 0 )
 	else {gradientInverse = 1;}
 
-	float zGradient = 1/calculateZGradient(verticiesList[0], verticiesList[2]);
-
-	if (calculateZGradient(verticiesList[0],verticiesList[2]) == 0) {std::cout << "Infinite z" << std::endl;}
+	// if y = 0 function has slope 1/z
+	float zGradient = calculateZGradient(verticiesList[0], verticiesList[2]);
+	float inverseZGradient =1/zGradient;
+	if (zGradient == 0) {std::cout << "zGradient is 0" << std::endl;}
+	 // if zDiff is 0 zGradient is 0.
 
 
 	//we have y dist between the middle point and top point by yCoords[1] - yCoords[0]
