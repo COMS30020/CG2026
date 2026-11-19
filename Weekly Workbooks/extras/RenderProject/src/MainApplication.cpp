@@ -34,9 +34,10 @@ glm::mat3 cameraOrientation;
 glm::vec3 lightPosition(0.0, 0.8, 0.0);
 float focalLength = 2.0; // setting the focal length at 2.0 positions the image plane halfway between the camera and the centre of the model.
 std::vector <float> zDepthBuffer(WIDTH*HEIGHT, 0.0);
+int triangleInd = 0;
 
 //Renderers
-RasterisedRenderer rasterisedRenderer = RasterisedRenderer(cameraPosition, lightPosition, cameraOrientation, focalLength, colourPalette, triangles, zDepthBuffer);
+RasterisedRenderer rasterisedRenderer = RasterisedRenderer(cameraPosition, lightPosition, cameraOrientation, focalLength, colourPalette, triangles, zDepthBuffer, triangleInd);
 RayTracedRenderer rayTracedRenderer = RayTracedRenderer(cameraPosition, lightPosition, cameraOrientation, focalLength, colourPalette, triangles);
 Renderer* currentRenderer = &rasterisedRenderer; // pointer to current renderer
 
@@ -47,28 +48,32 @@ void handleEvent(SDL_Event event, DrawingWindow &window) {
 			glm::vec3 translationVector(1.0, 0.0, 0.0);
 			cameraPosition += translationVector;
 			std::cout <<cameraPosition << std::endl;
-			window.clearPixels();
 		}
 		else if (event.key.keysym.sym == SDLK_RIGHT) {
 			glm::vec3 translationVector(1.0, 0.0, 0.0);
 			std::cout <<cameraPosition << std::endl;
 			cameraPosition -= translationVector;
-			window.clearPixels();
 		}
 		else if (event.key.keysym.sym == SDLK_UP) {
 
 			glm::vec3 translationVector(0.0, 1.0, 0.0);
 			cameraPosition -= translationVector;
 			std::cout <<cameraPosition << std::endl;
-			window.clearPixels();
 		}
 		else if (event.key.keysym.sym == SDLK_DOWN) {
 			glm::vec3 translationVector(0.0, 1.0, 0.0);
 			cameraPosition += translationVector;
 			std::cout <<cameraPosition << std::endl;
-			window.clearPixels();
 		}
-		else if (event.key.keysym.sym == SDLK_u) std::cout << "u" << std::endl;
+		else if (event.key.keysym.sym == SDLK_u) {
+			if (triangleInd < triangles.size()) {
+				rasterisedRenderer.incrementTriangleInd(1);
+			} else {
+				triangleInd = 0;
+				rasterisedRenderer.resetTriangleInd();
+			}
+
+		}
 		else if (event.key.keysym.sym == SDLK_f) std::cout << "f" << std::endl;
 		else if (event.key.keysym.sym == SDLK_TAB) savingFrames = !savingFrames;
 		else if (event.key.keysym.sym == SDLK_RETURN) window.toggleFullscreen();

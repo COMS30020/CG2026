@@ -8,6 +8,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+#include "Renderer.h"
+
 
 std::map<std::string, Colour> utilityFunctions::readMatFile(std::string filename, std::map<std::string,Colour> &colourMap) {
 	std::ifstream file(filename); // read file
@@ -156,5 +158,11 @@ glm::vec3 utilityFunctions::translateCameraPosition(glm::vec3 cameraPosition, gl
 
 	cameraPosition = cameraPosition - translationVector;
 	return cameraPosition;
+}
 
+std::vector<float> utilityFunctions::clearDepthBuffer(std::vector<float> depthBuffer) {
+	for (float & i : depthBuffer) {
+		i = 0.0;
+	}
+	return depthBuffer;
 }

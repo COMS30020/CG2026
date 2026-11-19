@@ -18,8 +18,9 @@
 
 
 void RasterisedRenderer::draw(DrawingWindow &window) {
-	// window.clearPixels(); //--> this empties the screen.
+	window.clearPixels(); //--> this empties the screen.
 	// Core 3D rendering data structures (for when we eventually get around to working in 3D ;o)
+	zDepthBuffer=utilityFunctions::clearDepthBuffer(zDepthBuffer);
 
 	std::vector<CanvasTriangle> wireFrame;
 	std::vector<Colour> triangleColours; // colour of each canvas triangle
@@ -39,11 +40,22 @@ void RasterisedRenderer::draw(DrawingWindow &window) {
 
 	// uint32_t colour = (255 << 24) + (0 << 16) + (255 << 8) + 0; // UNSIGNED INTEGER (THEREFORE, NEGATIVE INTEGER)
 	int triangleColourIndex = 0;
-	for (auto&&triangle : wireFrame) {
-		drawFilledTriangles(triangle, window, triangleColours[triangleColourIndex], zDepthBuffer);
-		triangleColourIndex++;
+	//for (auto&&triangle : wireFrame) {
+	for (int triangle = triangleInd; triangle < wireFrame.size(); triangle++) {
+		drawFilledTriangles(wireFrame[triangle], window, triangleColours[triangle], zDepthBuffer);
 	}
+		//triangleColourIndex++;
+	//}
 }
+
+
+void RasterisedRenderer::incrementTriangleInd(int increment) {
+	triangleInd += increment;
+}
+void RasterisedRenderer::resetTriangleInd() {
+	triangleInd = 0;
+}
+
 CanvasPoint RasterisedRenderer::projectVertexOntoCanvasPoint(glm::vec3 cameraPosition, float focalLength, glm::vec3 vertexPosition, DrawingWindow &window) {
 
 	// convert from model coordinate system to camera coordinate system. --> camera is origin.
@@ -54,6 +66,7 @@ CanvasPoint RasterisedRenderer::projectVertexOntoCanvasPoint(glm::vec3 cameraPos
 
 	glm::vec3 posRelativeToCamera = vertexPosition - cameraPosition;
 	float inverseZ = posRelativeToCamera.z;
+
 	// subtract from window.width for u to shift right. -->
 	// points with negative coordinates are meant to be projected onto the right of the plane.
 	// because 0,0 starts in middle of model when it attempts to project right side adjusted to camera it gets skewed weird?
@@ -64,7 +77,8 @@ CanvasPoint RasterisedRenderer::projectVertexOntoCanvasPoint(glm::vec3 cameraPos
 	float v = (focalLength * (posRelativeToCamera.y/ posRelativeToCamera.z))*imagePlaneScaling +window.height/2;
 
 	CanvasPoint twoDPoint = CanvasPoint(round(u),round(v));
-	twoDPoint.depth = 1/inverseZ;
+	if (inverseZ < 0.0) twoDPoint.depth = abs(1.0f/inverseZ) ;
+	twoDPoint.depth = 1.0f/inverseZ;
 
 	return twoDPoint;
 }
@@ -96,15 +110,14 @@ void RasterisedRenderer::lineDrawing(CanvasPoint from, CanvasPoint to, DrawingWi
 			float y = from.y + (yStepSize * i);
 
 			if (x>0 && y> 0 && x < window.width && y < window.height) { // restrict the drawing space//
-				float currentZDepth = abs(from.depth - abs(depStepSize));
-				//currentZDepth = abs(zDepths[floor(abs((x-from.x)))]);
-				int i = y * window.width + x;
+				float currentZDepth = abs(from.depth+ (depStepSize*i));
+				int z = floor(y) * window.width + floor(x);
 				//std::cout<<"origin:" << currentZDepth <<std::endl;
 
-				if (zDepthBuffer[i] <= currentZDepth) {
+				if (zDepthBuffer[z] <= currentZDepth) {
 					//std::cout <<"X: "<< x <<"Y: "<< y<< "z: "<< currentZDepth <<std::endl;
 					window.setPixelColour(floor(x), floor(y),  colour ); // can't have 1.5 pixel therefore need to round the x and y.
-					zDepthBuffer[i] = currentZDepth; //update zdepth buffer
+					zDepthBuffer[z] = currentZDepth; //update zdepth buffer
 				}
 			}
 		}

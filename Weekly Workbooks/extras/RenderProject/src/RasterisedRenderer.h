@@ -20,11 +20,15 @@ class RasterisedRenderer: public Renderer {
       const std::map<std::string, Colour>& colourPalette;
       const std::vector<ModelTriangle>& triangles;
       std::vector<float>& zDepthBuffer;
+      int triangleInd;
 
 
       void draw(DrawingWindow &window) override;
       void lineDrawing(CanvasPoint from, CanvasPoint to, DrawingWindow &window, Colour colourOfLine, std::vector<float > &zDepthBuffer);
       void drawStrokes(CanvasPoint from, CanvasPoint to, DrawingWindow &window, Colour colourOfLine);
+
+      void incrementTriangleInd(int increment);
+      void resetTriangleInd();
 
       void drawStrokedTriangles(CanvasTriangle triangle, DrawingWindow &window, Colour colour);
       void drawFilledTriangles(CanvasTriangle triangle, DrawingWindow &window, Colour colour, std::vector<float> &zDepthBuffer);
@@ -35,9 +39,9 @@ class RasterisedRenderer: public Renderer {
 
       // constructor of rasterised renderer
       RasterisedRenderer(const glm::vec3 &cameraPosition_, glm::vec3 &lightPosition_, const glm::mat3 &cameraOrientation_, float &focalLength_,
-                         const std::map<std::string, Colour> &colourPalette_, const std::vector<ModelTriangle> &triangles_, std::vector<float> &zDepthBuffer_) :
+                         const std::map<std::string, Colour> &colourPalette_, const std::vector<ModelTriangle> &triangles_, std::vector<float> &zDepthBuffer_, int triangleInd_) :
                          cameraPosition(cameraPosition_), lightPosition(lightPosition_), cameraOrientation(cameraOrientation_),
-                         focalLength(focalLength_), colourPalette(colourPalette_),triangles(triangles_),zDepthBuffer(zDepthBuffer_) {}
+                         focalLength(focalLength_), colourPalette(colourPalette_),triangles(triangles_),zDepthBuffer(zDepthBuffer_), triangleInd(triangleInd_) {}
 };
 
 
