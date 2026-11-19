@@ -57,7 +57,7 @@ else ()
     set(DEBUG_OPTIONS -O2 -fno-omit-frame-pointer -g)
     set(RELEASE_OPTIONS -O3 -march=native -mtune=native)
     # If the Address Sanitizer library is not available on your platform, you may need to remove ",-lasan" from the below 
-    target_link_libraries(RenderProject PUBLIC $<$<CONFIG:Debug>:-Wl,-lasan>)
+    target_link_libraries(RenderProject PUBLIC $<$<CONFIG:Debug>:-Wl>)
 
 endif()
 

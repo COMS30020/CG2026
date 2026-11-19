@@ -42,12 +42,9 @@ void RasterisedRenderer::draw(DrawingWindow &window) {
 	// uint32_t colour = (255 << 24) + (0 << 16) + (255 << 8) + 0; // UNSIGNED INTEGER (THEREFORE, NEGATIVE INTEGER)
 	int triangleColourIndex = 0;
 	for (auto&&triangle : wireFrame) {
-	// for (int triangle = triangleInd; triangle < wireFrame.size(); triangle++) {
 		drawFilledTriangles(triangle, window, triangleColours[triangleColourIndex], zDepthBuffer);
 		triangleColourIndex++;
 	}
-
-	//}
 }
 
 
@@ -242,7 +239,6 @@ void RasterisedRenderer::drawFilledTriangles(CanvasTriangle triangle, DrawingWin
 
 	float gradient = calculateGradient(verticiesList[0], verticiesList[2]);
 	float gradientInverse;
-
 	if (gradient != 0) {gradientInverse = 1/gradient;} // x/y to get 1/m (y=mx+c where c = 0 )
 	else {gradientInverse = 1;}
 
@@ -260,8 +256,8 @@ void RasterisedRenderer::drawFilledTriangles(CanvasTriangle triangle, DrawingWin
 	// if its >0 then it adds as appropriate :) LORD WHY WAS THAT SO HARD???
 
 	float extraPointX = verticiesList[0].x+((verticiesList[1].y-verticiesList[0].y) * gradientInverse); // IT WORKS :D
-	float extraPointZ = verticiesList[0].depth+((verticiesList[1].y-verticiesList[0].y) * zGradient);
-	CanvasPoint extraPoint = CanvasPoint((extraPointX),verticiesList[1].y, (extraPointZ));
+	float extraPointZ = verticiesList[0].depth+((verticiesList[1].y-verticiesList[0].y) * inverseZGradient);
+	CanvasPoint extraPoint = CanvasPoint((extraPointX),verticiesList[1].y, extraPointZ);
 
 	int numberOfRakes = verticiesList[1].y-verticiesList[0].y + 1;
 	// shouldn't be the same number of points on both sides :/ --> because the lines have different gradients
