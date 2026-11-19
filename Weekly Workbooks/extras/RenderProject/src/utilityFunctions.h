@@ -18,6 +18,5 @@ class utilityFunctions {
       static std::vector<float> interpolateSingleFloats(float from, float to, int numberOfValues);
       static std::vector<glm::vec3> interpolateThreeElementValues(glm::vec3 from, glm::vec3 to, int numberOfValues);
       static uint32_t convertColourToUint32(const Colour& colour);
+      static glm::vec3 translateCameraPosition(glm::vec3 cameraPosition, glm::vec3 translationVector);
 };
-
-
