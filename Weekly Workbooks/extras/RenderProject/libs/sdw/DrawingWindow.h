@@ -3,6 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+
+#include "Colour.h"
 #include "SDL.h"
 
 #ifdef _WIN32
@@ -36,6 +38,7 @@ public:
 	uint32_t getPixelColour(size_t x, size_t y);
 	void clearPixels();
 	void toggleFullscreen();
+
 };
 
 void printMessageAndQuit(const std::string &message, const char *error);

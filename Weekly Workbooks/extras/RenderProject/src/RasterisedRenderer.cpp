@@ -71,6 +71,50 @@ CanvasPoint RasterisedRenderer::projectVertexOntoCanvasPoint(glm::vec3 cameraPos
 
 void RasterisedRenderer::lineDrawing(CanvasPoint from, CanvasPoint to, DrawingWindow &window, Colour colourOfLine, std::vector<float> &zDepthBuffer) {
 
+	float xDiff = to.x - from.x;
+	float yDiff = to.y - from.y;
+	float depthDiff = to.depth - from.depth;
+
+	// Colour WHITE = Colour(255,255,255);
+	uint32_t colour = (255 << 24) + (colourOfLine.red << 16) + (colourOfLine.green << 8) + colourOfLine.blue; // UNSIGNED INTEGER (THEREFORE, NEGATIVE INTEGER)
+
+	float numberOfSteps = fmax(abs(xDiff), abs(yDiff));
+
+	if (numberOfSteps>0) {
+		// always using the bigger number of steps ensures we don't skip pixels --> how does that ensure this?
+		float xStepSize = xDiff / numberOfSteps;
+		// work out step size of x or y by dividing total distance by number of steps take
+		// (i.e. the n.o intervals --> similar to interpolation)
+		float yStepSize = yDiff / numberOfSteps;
+
+		float depStepSize = depthDiff / numberOfSteps;
+
+		std::vector<float> zDepths = utilityFunctions::interpolateSingleFloats(from.depth, to.depth, numberOfSteps);
+
+
+
+		for (int i=0; i <= numberOfSteps; i++) {
+			float x = from.x + (xStepSize * i);
+			float y = from.y + (yStepSize * i);
+
+			if (x>0 && y> 0 && x < window.width && y < window.height) { // restrict the drawing space//
+				float currentZDepth = abs(from.depth - abs(depStepSize));
+				//currentZDepth = abs(zDepths[floor(abs((x-from.x)))]);
+				int i = y * window.width + x;
+				//std::cout<<"origin:" << currentZDepth <<std::endl;
+
+
+				if (zDepthBuffer[i] < currentZDepth) {
+					window.setPixelColour(floor(x), floor(y),  colour ); // can't have 1.5 pixel therefore need to round the x and y.
+					zDepthBuffer[i] = currentZDepth; //update zdepth buffer
+				}
+			}
+		}
+	}
+}
+
+void RasterisedRenderer::drawStrokes(CanvasPoint from, CanvasPoint to, DrawingWindow &window, Colour colourOfLine) {
+
 	int xDiff = to.x - from.x;
 	int yDiff = to.y - from.y;
 
@@ -84,30 +128,21 @@ void RasterisedRenderer::lineDrawing(CanvasPoint from, CanvasPoint to, DrawingWi
 	// (i.e. the n.o intervals --> similar to interpolation)
 	float yStepSize = yDiff / numberOfSteps;
 
-	std::vector<float> zDepths = obtainZDepths(from, to, abs(xDiff));
 
 	for (int i=0; i <= numberOfSteps; i++) {
 		float x = from.x + (xStepSize * i);
 		float y = from.y + (yStepSize * i);
 
 		if (x>0 && y> 0 && x < window.width && y < window.height) { // restrict the drawing space//
-			int index = floor(abs(x- from.x)); // difference between
-			float currentZDepth = zDepths[index]*-1.0;
-
-			//int i = y * window.width + x;
-
-			if (zDepthBuffer[i] <= currentZDepth) {
 				window.setPixelColour(floor(x), floor(y), colour ); // can't have 1.5 pixel therefore need to round the x and y.
-				zDepthBuffer[i] = currentZDepth; //update zdepth buffer
 			}
 		}
 	}
-}
 
-void RasterisedRenderer::drawStrokedTriangles(CanvasTriangle triangle, DrawingWindow &window, Colour colour, std::vector<float > &zDepthBuffer) {
-	lineDrawing(triangle.vertices[0], triangle.vertices[1], window, colour, zDepthBuffer);
-	lineDrawing(triangle.vertices[0], triangle.vertices[2], window, colour, zDepthBuffer);
-	lineDrawing(triangle.vertices[1], triangle.vertices[2], window, colour, zDepthBuffer);
+void RasterisedRenderer::drawStrokedTriangles(CanvasTriangle triangle, DrawingWindow &window, Colour colour) {
+	drawStrokes(triangle.vertices[0], triangle.vertices[1], window, colour);
+	drawStrokes(triangle.vertices[0], triangle.vertices[2], window, colour);
+	drawStrokes(triangle.vertices[1], triangle.vertices[2], window, colour);
 }
 
 std::vector<CanvasPoint> RasterisedRenderer::sortCoordsByY(std::vector<CanvasPoint>  unsortedVertices) {
@@ -132,22 +167,18 @@ std::vector<CanvasPoint> RasterisedRenderer::sortCoordsByY(std::vector<CanvasPoi
 float RasterisedRenderer::calculateGradient(CanvasPoint p1, CanvasPoint p2) {
 	float yDiff = p2.y - p1.y;
 	float xDiff = p2.x - p1.x;
-	float gradient = yDiff/xDiff;
-
+	float gradient = yDiff;
+	if (xDiff != 0) gradient = yDiff/xDiff;
 	return gradient;
 }
 
-std::vector<float> RasterisedRenderer::obtainZDepths(CanvasPoint firstPoint, CanvasPoint secondPoint, int pointCount) {
-	std::vector<float> zPoints = utilityFunctions::interpolateSingleFloats(firstPoint.depth, secondPoint.depth, pointCount);
-	return zPoints;
-}
 
 std::vector<CanvasPoint> RasterisedRenderer::obtainPoints(CanvasPoint firstPoint, CanvasPoint secondPoint, int pointCount) {
 	float gradientInverse = 1/calculateGradient(firstPoint, secondPoint);
 
 	std::vector<float> yPoints = utilityFunctions::interpolateSingleFloats(firstPoint.y, secondPoint.y, pointCount);
 
-	std::vector<float> zDepths = obtainZDepths(firstPoint, secondPoint, pointCount);
+	std::vector<float> zDepths = utilityFunctions::interpolateSingleFloats(firstPoint.depth, secondPoint.depth, pointCount);
 
 	std::vector<CanvasPoint> points;
 
@@ -162,8 +193,10 @@ std::vector<CanvasPoint> RasterisedRenderer::obtainPoints(CanvasPoint firstPoint
 }
 
 void RasterisedRenderer::drawFilledTriangles(CanvasTriangle triangle, DrawingWindow &window, Colour colour, std::vector<float> &zDepthBuffer) {
-	//drawStrokedTriangles(triangle, window, colour,  zDepthBuffer);
-
+	//drawStrokedTriangles(triangle, window, colour);
+	// lineDrawing(triangle.vertices[0], triangle.vertices[1], window, colour, zDepthBuffer);
+	// lineDrawing(triangle.vertices[0], triangle.vertices[2], window, colour, zDepthBuffer);
+	// lineDrawing(triangle.vertices[1], triangle.vertices[2], window, colour,zDepthBuffer);
 	std::vector<CanvasPoint> verticiesList;
 
 	for (int i =0; i <3; i++) {
@@ -207,6 +240,8 @@ void RasterisedRenderer::drawFilledTriangles(CanvasTriangle triangle, DrawingWin
 			lineDrawing(downLinePoints[x], secondDownLinePoints[x],window,colour,zDepthBuffer);
 		}
 	}
+
+
 }
 
 	// texture map later. --> just need theory for midterm!!!!!! -_- doing easier way after reading week.
